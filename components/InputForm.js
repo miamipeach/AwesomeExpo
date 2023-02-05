@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   KeyboardAvoidingView,
@@ -8,16 +8,33 @@ import {
   TextInput,
   StyleSheet,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { addTodo } from '../redux/slices/todoSlice';
 
 const MyComponent = () => {
+  const [currentValue, setCurrentValue] = useState('');
+  const dispatch = useDispatch();
+  const handleSubmit = () => {
+    if (currentValue === '') return;
+    dispatch(addTodo(currentValue));
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.addFormContainer}
     >
-      <TextInput placeholder={'할일을 작성해주세요.'} style={styles.inputField} />
+      <TextInput
+        placeholder={'할일을 작성해주세요.'}
+        style={styles.inputField}
+        value={currentValue}
+        onChangeText={setCurrentValue}
+        onSubmitEditing={handleSubmit}
+      />
       <Pressable style={styles.addButton}>
-        <Text style={styles.addButtonText}>+</Text>
+        <Text style={styles.addButtonText} onPress={handleSubmit}>
+          +
+        </Text>
       </Pressable>
     </KeyboardAvoidingView>
   );
